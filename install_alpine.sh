@@ -94,7 +94,7 @@ install_x-ui() {
             exit 1
         fi
         echo -e "获取x-ui最新版本: ${tag_version}, 开始安装..."
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz https://github.com/56idc/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine.tar.gz
+        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz https://github.com/56idc/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine.tar.gz
         if [[ $? -ne 0 ]]; then
             echo -e "${red}下载 x-ui 失败，请确保你的服务器可以访问 GitHub ${plain}"
             exit 1
@@ -110,7 +110,7 @@ install_x-ui() {
 
         url="https://github.com/56idc/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine.tar.gz"
         echo -e "开始安装x-ui $1"
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz ${url}
+        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz ${url}
         if [[ $? -ne 0 ]]; then
             echo -e "${red}下载x-ui $1 失败，请检查版本是否存在 ${plain}"
             exit 1

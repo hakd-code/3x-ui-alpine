@@ -47,3 +47,5 @@ bash <(curl -Ls https://raw.githubusercontent.com/56idc/3x-ui-alpine/master/inst
 3. 同步官方版本v2.4.9
 ## log 2024/12/21
 1. 同步官方版本v2.4.10
+## log 2024/12/28
+1. 同步官方版本v2.4.11

@@ -6,7 +6,7 @@ https://github.com/MHSanaei/3x-ui
 
 # 一键安装
 ```
-apk add curl
+apk add curl bash
 bash <(curl -Ls https://raw.githubusercontent.com/56idc/3x-ui-alpine/master/install_alpine.sh)
 ```
 # 官方功能移植列表:

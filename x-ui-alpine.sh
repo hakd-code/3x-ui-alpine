@@ -584,8 +584,8 @@ update_geo() {
     1)
         rc-service x-ui stop
         rm -f geoip.dat geosite.dat
-        wget -N https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
-        wget -N https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
+        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
+        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
         echo -e "${green}Loyalsoldier 数据升级成功!${plain}"
         rc-service x-ui start
         ;;

@@ -38,9 +38,9 @@ config_after_install() {
             local config_username=$(gen_random_string 10)
             local config_password=$(gen_random_string 10)
 
-            read -p "Would you like to customize the Panel Port settings? (If not, a random port will be applied) [y/n]: " config_confirm
+            read -p "您是否需要自定义面板端口? (如果不需要自定义, 系统将随机生成端口) [y/n]: " config_confirm
             if [[ "${config_confirm}" == "y" || "${config_confirm}" == "Y" ]]; then
-                read -p "Please set up the panel port: " config_port
+                read -p "请输入面板自定义端口: " config_port
                 echo -e "${yellow}您的面板端口是: ${config_port}${plain}"
             else
                 local config_port=$(shuf -i 1024-62000 -n 1)
@@ -48,7 +48,7 @@ config_after_install() {
             fi
 
             /usr/local/x-ui/x-ui setting -username "${config_username}" -password "${config_password}" -port "${config_port}" -webBasePath "${config_webBasePath}"
-            echo -e "这是全新安装，出于安全考虑，会生成随机登录信息:"
+            echo -e "这是全新安装, 出于安全考虑, 会生成随机登录信息:"
             echo -e "###############################################"
             echo -e "${green}用户名: ${config_username}${plain}"
             echo -e "${green}密码: ${config_password}${plain}"
@@ -56,10 +56,10 @@ config_after_install() {
             echo -e "${green}面板路径: ${config_webBasePath}${plain}"
             echo -e "${green}访问面板URL: http://${server_ip}:${config_port}/${config_webBasePath}${plain}"
             echo -e "###############################################"
-            echo -e "${yellow}如果你忘记了登录信息，你可以使用命令“x-ui settings”${plain}"
+            echo -e "${yellow}如果你忘记了登录信息, 你可以使用命令“x-ui settings”${plain}"
         else
             local config_webBasePath=$(gen_random_string 15)
-            echo -e "${yellow}面板路径缺失或太短。正在生成一个新的...${plain}"
+            echo -e "${yellow}面板路径缺失或太短, 正在生成一个新的...${plain}"
             /usr/local/x-ui/x-ui setting -webBasePath "${config_webBasePath}"
             echo -e "${green}新的面板路径: ${config_webBasePath}${plain}"
             echo -e "${green}访问面板URL: http://${server_ip}:${existing_port}/${config_webBasePath}${plain}"
@@ -69,16 +69,16 @@ config_after_install() {
             local config_username=$(gen_random_string 10)
             local config_password=$(gen_random_string 10)
 
-            echo -e "${yellow}检测到默认用户名和密码。需要安全更新...${plain}"
+            echo -e "${yellow}检测到默认用户名和密码, 需要安全更新...${plain}"
             /usr/local/x-ui/x-ui setting -username "${config_username}" -password "${config_password}"
             echo -e "生成新的随机登录用户名和密码:"
             echo -e "###############################################"
             echo -e "${green}用户名: ${config_username}${plain}"
             echo -e "${green}密码: ${config_password}${plain}"
             echo -e "###############################################"
-            echo -e "${yellow}如果你忘记了登录信息，你可以使用命令“x-ui settings”${plain}"
+            echo -e "${yellow}如果你忘记了登录信息, 你可以使用命令“x-ui settings”${plain}"
         else
-            echo -e "${green}用户名、密码和面板路径已正确设置。退出...${plain}"
+            echo -e "${green}用户名, 密码和面板路径已正确设置. 退出...${plain}"
         fi
     fi
 
@@ -90,13 +90,13 @@ install_x-ui() {
     if [ $# == 0 ]; then
         tag_version=$(curl -Ls "https://api.github.com/repos/56idc/3x-ui-alpine/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$tag_version" ]]; then
-            echo -e "${red}获取x-ui版本失败，可能是GitHub API限制，请稍后重试...${plain}"
+            echo -e "${red}获取x-ui版本失败, 可能是GitHub API限制或网络连接失败, 请检查您的网络连接后重试...${plain}"
             exit 1
         fi
         echo -e "获取x-ui最新版本: ${tag_version}, 开始安装..."
         wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz https://github.com/56idc/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine.tar.gz
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 x-ui 失败，请确保你的服务器可以访问 GitHub ${plain}"
+            echo -e "${red}下载 x-ui 失败, 请确保你的服务器可以访问 GitHub ${plain}"
             exit 1
         fi
     else
@@ -104,7 +104,7 @@ install_x-ui() {
         tag_version_numeric=${tag_version#v}
         min_version="2.4.8"
         if [[ "$(printf '%s\n' "$min_version" "$tag_version_numeric" | sort -V | head -n1)" != "$min_version" ]]; then
-            echo -e "${red}请使用较新的版本（至少 v2.4.8）。退出安装...${plain}"
+            echo -e "${red}请使用较新的版本(至少 v2.4.8), 退出安装...${plain}"
             exit 1
         fi
 
@@ -112,7 +112,7 @@ install_x-ui() {
         echo -e "开始安装x-ui $1"
         wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载x-ui $1 失败，请检查版本是否存在 ${plain}"
+            echo -e "${red}下载x-ui $1 失败, 请检查版本是否存在 ${plain}"
             exit 1
         fi
     fi
@@ -147,9 +147,8 @@ install_x-ui() {
     rc-service x-ui start
     echo -e "${green}x-ui ${tag_version}${plain} 安装完成, 运行中..."
     echo -e ""
-    echo -e "x-ui control menu usages: "
+    echo -e "x-ui子命令菜单:"
     echo -e "----------------------------------------------"
-    echo -e "SUBCOMMANDS:"
     echo -e "x-ui              - 主菜单"
     echo -e "x-ui start        - 运行服务"
     echo -e "x-ui stop         - 停止服务"

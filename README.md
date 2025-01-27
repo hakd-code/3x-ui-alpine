@@ -1,13 +1,13 @@
 # 3x-ui-alpines项目说明: 
-本项目从3x-ui官方版本移植到Alpine系统, 面板功能与官方版本完全一致, 面板使用说明请参考官方文档.
+本项目从56idc/3x-ui-alpine项目改版，增加对arm64版本的支持。同时也是对官方版本移植到Alpine系统, 面板功能与官方版本完全一致，引用的安装包也来源于官方的3x-ui, 面板使用说明请参考官方文档.
 ```
-https://github.com/MHSanaei/3x-ui
+引用改版自：https://github.com/56idc/3x-ui-alpine
+3x-ui官方：https://github.com/MHSanaei/3x-ui
 ```
 
 # 一键安装
 ```
-apk add curl bash gzip
-bash <(curl -Ls https://raw.githubusercontent.com/56idc/3x-ui-alpine/master/install_alpine.sh)
+apk add curl bash gzip && bash <(curl -Ls https://raw.githubusercontent.com/hakd-code/3x-ui-alpine/master/install_alpine.sh)
 ```
 # 官方功能移植列表:
   1. Install - 安装: 已完成(2024/12/16)

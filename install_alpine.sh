@@ -10,15 +10,6 @@ cur_dir=$(pwd)
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}严重错误: ${plain} 请以 root 权限运行此脚本 \n " && exit 1
 
-install_base() {
-	apk add --no-cache --update ca-certificates tzdata fail2ban bash
-	rm -f /etc/fail2ban/jail.d/alpine-ssh.conf
-	cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-	sed -i "s/^\[ssh\]$/&\nenabled = false/" /etc/fail2ban/jail.local
-	sed -i "s/^\[sshd\]$/&\nenabled = false/" /etc/fail2ban/jail.local
-	sed -i "s/#allowipv6 = auto/allowipv6 = auto/g" /etc/fail2ban/fail2ban.conf
-}
-
 arch() {
     case "$(uname -m)" in
     x86_64 | x64 | amd64) echo 'amd64' ;;
@@ -32,6 +23,15 @@ arch() {
     esac
 }
 echo "arch: $(arch)"
+
+install_base() {
+	apk add --no-cache --update ca-certificates tzdata fail2ban bash
+	rm -f /etc/fail2ban/jail.d/alpine-ssh.conf
+	cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+	sed -i "s/^\[ssh\]$/&\nenabled = false/" /etc/fail2ban/jail.local
+	sed -i "s/^\[sshd\]$/&\nenabled = false/" /etc/fail2ban/jail.local
+	sed -i "s/#allowipv6 = auto/allowipv6 = auto/g" /etc/fail2ban/fail2ban.conf
+}
 
 gen_random_string() {
     local length="$1"
@@ -59,6 +59,14 @@ config_after_install() {
             else
                 local config_port=$(shuf -i 1024-62000 -n 1)
                 echo -e "${yellow}生成的随机端口: ${config_port}${plain}"
+            fi
+
+	    read -p "您是否需要自定义面板路径? (如果不需要自定义, 系统将随机生成路径) [y/n]: " config_confirm
+            if [[ "${config_confirm}" == "y" || "${config_confirm}" == "Y" ]]; then
+                read -p "请输入面板自定义路径: " config_webBasePath
+                echo -e "${yellow}您的面板路径是: ${config_webBasePath}${plain}"
+            else
+                echo -e "${yellow}生成的随机路径: ${config_webBasePath}${plain}"
             fi
 
             /usr/local/x-ui/x-ui setting -username "${config_username}" -password "${config_password}" -port "${config_port}" -webBasePath "${config_webBasePath}"
@@ -108,7 +116,7 @@ install_x-ui() {
             exit 1
         fi
         echo -e "获取x-ui最新版本: ${tag_version}, 开始安装..."
-        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz https://github.com/hakd-code/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine-$(arch).tar.gz
+        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine-$(arch).tar.gz https://github.com/hakd-code/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine-$(arch).tar.gz
         if [[ $? -ne 0 ]]; then
             echo -e "${red}下载 x-ui 失败, 请确保你的服务器可以访问 GitHub ${plain}"
             exit 1
@@ -124,7 +132,7 @@ install_x-ui() {
 
         url="https://github.com/hakd-code/3x-ui-alpine/releases/download/${tag_version}/x-ui-linux-alpine-$(arch).tar.gz"
         echo -e "开始安装x-ui $1"
-        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine.tar.gz ${url}
+        wget --no-check-certificate -O /usr/local/x-ui-linux-alpine-$(arch).tar.gz ${url}
         if [[ $? -ne 0 ]]; then
             echo -e "${red}下载x-ui $1 失败, 请检查版本是否存在 ${plain}"
             exit 1
@@ -144,12 +152,10 @@ install_x-ui() {
 	  fi
     fi
 
-    tar zxvf x-ui-linux-alpine.tar.gz
-    rm x-ui-linux-alpine.tar.gz -f
-    mv x-ui/app/* x-ui
-    rm x-ui/app -rf
-    rm x-ui/DockerEntrypoint.sh
-    chmod +x x-ui/x-ui x-ui/bin/xray-linux-amd64
+    tar zxvf x-ui-linux-alpine-$(arch).tar.gz
+    rm x-ui-linux-alpine-$(arch).tar.gz -f
+    rm x-ui/x-ui.service x-ui/x-ui.sh -f
+    chmod +x x-ui/x-ui x-ui/bin/xray-linux-$(arch)
     wget --no-check-certificate -O /usr/bin/x-ui https://raw.githubusercontent.com/hakd-code/3x-ui-alpine/main/x-ui-alpine.sh
     chmod +x /usr/bin/x-ui
     wget --no-check-certificate -O /etc/init.d/x-ui https://raw.githubusercontent.com/hakd-code/3x-ui-alpine/main/x-ui.rc
